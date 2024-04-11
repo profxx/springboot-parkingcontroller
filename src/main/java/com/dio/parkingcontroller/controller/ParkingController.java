@@ -55,4 +55,11 @@ public class ParkingController {
         parkingDTO = parkingMapper.toParkingDTO(parking);
         return ResponseEntity.ok().body(parkingDTO);
     }
+
+    @PutMapping("/{id}/exit")
+    public ResponseEntity<ParkingDTO> exit(@PathVariable Long id){
+        Parking parking = parkingService.exit(id);
+        ParkingDTO parkingDTO = parkingMapper.toParkingDTO(parking);
+        return ResponseEntity.ok().body(parkingDTO);
+    }
 }

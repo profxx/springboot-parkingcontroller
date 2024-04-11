@@ -55,4 +55,11 @@ public class ParkingService {
             return true;
         }
     }
+
+    // Registra a saída de um veículo
+    public Parking exit(Long id){
+        Parking parking = getById(id);
+        parking.setExitDate(LocalDateTime.now());
+        return parking;
+    }
 }
