@@ -1,6 +1,6 @@
 package com.dio.parkingcontroller.controller;
 
-import com.dio.parkingcontroller.entity.dto.ParkingDTO;
+import com.dio.parkingcontroller.controller.dto.ParkingDTO;
 import com.dio.parkingcontroller.controller.mapper.ParkingMapper;
 import com.dio.parkingcontroller.entity.Parking;
 import com.dio.parkingcontroller.service.ParkingService;
@@ -36,8 +36,23 @@ public class ParkingController {
 
     @PostMapping("/inserir")
     public ResponseEntity<ParkingDTO> insertNew(@RequestBody ParkingDTO parkingDTO){
-        ParkingDTO savedParking =  parkingService.insertNew(parkingDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedParking);
+        Parking parking = parkingMapper.toParking(parkingDTO);
+        Parking savedParking = parkingService.insertNew(parking);
+        ParkingDTO result = parkingMapper.toParkingDTO(savedParking);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable Long id){
+        Boolean flag = parkingService.deleteById(id);
+        return ResponseEntity.ok().body(flag);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ParkingDTO> update(@PathVariable Long id, @RequestBody ParkingDTO parkingDTO){
+        Parking parking = parkingMapper.toParking(parkingDTO);
+        parking = parkingService.update(id, parking);
+        parkingDTO = parkingMapper.toParkingDTO(parking);
+        return ResponseEntity.ok().body(parkingDTO);
+    }
 }

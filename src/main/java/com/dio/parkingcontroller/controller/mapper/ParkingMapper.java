@@ -1,6 +1,6 @@
 package com.dio.parkingcontroller.controller.mapper;
 
-import com.dio.parkingcontroller.entity.dto.ParkingDTO;
+import com.dio.parkingcontroller.controller.dto.ParkingDTO;
 import com.dio.parkingcontroller.entity.Parking;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -21,8 +21,8 @@ public class ParkingMapper {
         return parkings.stream().map(this::parkingDTO).collect(Collectors.toList());
     }
 
-    public Parking toParkingDTO (ParkingDTO parking) {
-        return MODEL_MAPPER.map(parking, Parking.class);
+    public ParkingDTO toParkingDTO (Parking parking) {
+        return MODEL_MAPPER.map(parking, ParkingDTO.class);
     }
 
     public Parking toParking(ParkingDTO parkingDTO) {
