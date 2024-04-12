@@ -6,6 +6,8 @@ import com.dio.parkingcontroller.exception.ParkingNotFoundException;
 import com.dio.parkingcontroller.respository.ParkingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -18,24 +20,28 @@ public class ParkingService {
     @Autowired
     private ParkingRepository parkingRepository;
 
+
     // Retorna lista com todos os parkings
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public List<Parking> getAll() {
         return parkingRepository.findAll();
     }
 
     // Retorna um parking específico
+    @Transactional(readOnly = true)
     public Parking getById(Long id) {
-        Optional<Parking> parkingOptional = parkingRepository.findById(id);
-        return parkingOptional.orElseThrow(() -> new ParkingNotFoundException("Parking not found with id: " + id));
+        return parkingRepository.findById(id).orElseThrow(() -> new ParkingNotFoundException("Parking not found with id: " + id));
     }
 
     // Insere um novo parking
+    @Transactional
     public Parking insertNew(Parking parking){
         parking.setEntryDate(LocalDateTime.now());
         return parkingRepository.save(parking);
     }
 
     // Altera um parking
+    @Transactional
     public Parking update(Long id, Parking parking){
         Parking currentParking = getById(id);
         currentParking.setColor(parking.getColor());
@@ -47,6 +53,7 @@ public class ParkingService {
     }
 
     // Deleta um parking
+    @Transactional
     public Boolean deleteById(Long id){
         Parking parking = getById(id);
         if (parking == null){
@@ -58,12 +65,12 @@ public class ParkingService {
     }
 
     // Registra a saída de um veículo
-    public Parking exit(Long id){
+    @Transactional
+    public Parking checkOut(Long id){
         Parking parking = getById(id);
         parking.setExitDate(LocalDateTime.now());
-        double pricePerHour = 2.00;
-        double hours = ChronoUnit.HOURS.between(parking.getEntryDate(),parking.getExitDate());
-        parking.setBill(pricePerHour + Math.ceil(hours) * pricePerHour);
+        parking.setBill(ParkingCheckOut.getBill(parking));
+        parkingRepository.save(parking);
         return parking;
-    }
+        }
 }
