@@ -47,6 +47,12 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Spring security - Added Manually -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
 		<!-- Model Mapper - Added Manually -->
 		<dependency>
 			<groupId>org.modelmapper</groupId>
